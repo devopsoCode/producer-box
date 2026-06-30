@@ -1,0 +1,21 @@
+{
+  "servers": {
+    "srv_mqt8sqay_c8wdls": {
+      "id": "srv_mqt8sqay_c8wdls",
+      "ServerName": "DSH-dev",
+      "gitBranch": "dev",
+      "baseURL": "https://dev.diabeticshoeshub.com/",
+      "magentoHost": "91.98.131.77",
+      "magentousername": "dsh",
+      "magentoprivateKey": "dsh.pem",
+      "magentoDirPath": "/srv/devdiabeticshoeshub/backend",
+      "frontHost": "91.98.131.77",
+      "frontUsername": "dsh",
+      "frontPrivateKey": "dsh.pem",
+      "frontDirPath": "/srv/devdiabeticshoeshub/frontend",
+      "maxBackups": "5",
+      "MaxErrorLimit": "",
+      "maxLogs": "10"
+    }
+  }
+}
