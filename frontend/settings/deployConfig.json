@@ -1,21 +1,38 @@
 {
   "servers": {
-    "srv_mqt8sqay_c8wdls": {
-      "id": "srv_mqt8sqay_c8wdls",
-      "ServerName": "DSH-dev",
-      "gitBranch": "dev",
-      "baseURL": "https://dev.diabeticshoeshub.com/",
-      "magentoHost": "91.98.131.77",
-      "magentousername": "dsh",
-      "magentoprivateKey": "dsh.pem",
-      "magentoDirPath": "/srv/devdiabeticshoeshub/backend",
-      "frontHost": "91.98.131.77",
-      "frontUsername": "dsh",
-      "frontPrivateKey": "dsh.pem",
-      "frontDirPath": "/srv/devdiabeticshoeshub/frontend",
+    "srv_ml928om5_i74imd": {
+      "id": "srv_ml928om5_i74imd",
+      "ServerName": "TimeLuxury.com Live",
+      "gitBranch": "main",
+      "baseURL": "https://www.timeluxury.com/",
+      "magentoHost": "178.156.160.88",
+      "magentousername": "tlx",
+      "magentoprivateKey": "tlx_live_console.pem",
+      "magentoDirPath": "/var/www/magento",
+      "frontHost": "178.156.160.88",
+      "frontUsername": "tlx",
+      "frontPrivateKey": "tlx_live_console.pem",
+      "frontDirPath": "/var/www/next/tlx/TLX-Production-FE",
       "maxBackups": "5",
-      "MaxErrorLimit": "",
-      "maxLogs": "10"
+      "MaxErrorLimit": "5",
+      "maxLogs": "15"
+    },
+    "srv_mp7wkfaj_bn3z58": {
+      "id": "srv_mp7wkfaj_bn3z58",
+      "ServerName": "beta timeluxury",
+      "gitBranch": "dev",
+      "baseURL": "https://beta.timeluxury.com/",
+      "magentoHost": "107.170.45.133",
+      "magentousername": "tlx",
+      "magentoprivateKey": "tlx_live_console.pem",
+      "magentoDirPath": "/var/www/magento",
+      "frontHost": "107.170.45.133",
+      "frontUsername": "tlx",
+      "frontPrivateKey": "tlx_live_console.pem",
+      "frontDirPath": "/var/www/next/TLX-Production-FE",
+      "maxBackups": "5",
+      "MaxErrorLimit": "5",
+      "maxLogs": "5"
     }
   }
 }

@@ -1,6 +1,4 @@
 // server.js
-import 'dotenv/config';
-
 import express from "express";
 import multer from "multer";
 import http from "http";
@@ -15,26 +13,30 @@ import fsSync from "fs";
 
 
 
-try {
-  const dirs = ["settings", "logs"];
-  dirs.forEach(dir => {
-    if (!fsSync.existsSync(dir)) {
-      fsSync.mkdirSync(dir, { recursive: true });
-    }
-  });
 
-} catch (err) {
-  console.log("Directory setup failed: "+ err.message);
+
+const PORT = process.env.PORT || 4000;
+const appName = process.env.APPNAME || "tlxconsoleapp";
+
+const logsDir = path.join("/var/log", appName);
+const libDir = path.join("/var/lib", appName);
+
+if (!fsSync.existsSync(logsDir)) {
+  fsSync.mkdirSync(logsDir, { recursive: true });
+}
+if (!fsSync.existsSync(libDir)) {
+  fsSync.mkdirSync(libDir, { recursive: true });
 }
 
-const logsDir = "./logs";
-const logsRoot = path.resolve("logs");
+const logsRoot = path.resolve(logsDir);
+
+const deployConfigFile = libDir+'/deployConfig.json';
+const deployOptionsFile = libDir+'/deployOptions.json';
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = process.env.PORT || 4000;
-const appName = process.env.APPNAME ; 
-
     
 const app = express();
 const server = http.createServer(app);
@@ -50,11 +52,9 @@ const io = new Server(server, {
   let defaultEnvVariable={}
   let terminalLogs = []; // keep recent logs
   let terminalCMD = ''; // keep recent logs
-  const deployConfigFile = `settings/deployConfig.json`;
-  const deployOptionsFile = `settings/deployOptions.json`;
+  
   let sshConnection; // global or outer scope
   let isConnected = false;
-  let withSudo='';
     
   let logFile = ``;
   let defaultServerId='default';
@@ -75,7 +75,6 @@ const io = new Server(server, {
     cmd:''
   };
   let envVariable=''
-  let remoteBuildPID = null;
 
 
 
@@ -85,7 +84,7 @@ app.use(cors());
 // Storage location + rename file
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "settings/");
+    cb(null, libDir+"/");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -116,7 +115,7 @@ async function connectSSH(HostName,UserName,PrivateKey) {
     host: HostName,
     username: UserName,
     privateKey: fsSync.readFileSync(
-      './settings/' + PrivateKey,
+      libDir+'/' + PrivateKey,
       'utf8'
     ),
   });
@@ -132,39 +131,28 @@ async function connectSSH(HostName,UserName,PrivateKey) {
 
 
 // Utility: get build stats (15 days)
-function getBuildStats(defaultEnvVariable,ServerId) {
+function getBuildStats(ServerId) {
   try {
+    
+    const now = new Date();
+    const days15Ago = new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000);
+
     const files = fsSync.readdirSync(logsDir).filter(f => f.startsWith(ServerId) && f.endsWith(".json"));
-    const logFilesWithTime = files.map(f => {
-      const stat = fsSync.statSync(path.join(logsDir, f));
-      return { name: f, mtime: stat.mtimeMs };
-    }).sort((a, b) => a.mtime - b.mtime); // oldest first
-
-    const maxLogs = defaultEnvVariable.maxLogs || 5;
-    if (logFilesWithTime.length > maxLogs) {
-      const toRemove = logFilesWithTime.slice(0, logFilesWithTime.length - maxLogs);
-      toRemove.forEach(f => {
-        try { fsSync.unlinkSync(path.join(logsDir, f.name)); } catch (e) {}
-      });
-    }
-
-
     const logs = files
       .map(f => {
-      try {
-      return JSON.parse(fsSync.readFileSync(path.join(logsDir, f), "utf8"));
-      } catch (e) {
-      return null;
-      }
+        try {
+          return JSON.parse(fsSync.readFileSync(path.join(logsDir, f), "utf8"));
+        } catch (e) {
+          return null;
+        }
       })
       .filter(Boolean)
       .filter(log => log.status!='Running')
+      .filter(log => new Date(log.timestamp) >= days15Ago)
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-
-
     if (logs.length === 0) {
-      return { logsList:[], total: 0, successRate: 0, avgDuration: 0, currentStreak: 0 };
+      return { total: 0, successRate: 0, avgDuration: 0, currentStreak: 0 };
     }
 
     let total = logs.length;
@@ -187,71 +175,61 @@ function getBuildStats(defaultEnvVariable,ServerId) {
     const avgDuration = (totalDuration / total).toFixed(2);
     const successRate = ((successCount / total) * 100).toFixed(2);
 
-    return { logsList:logs, currentStreak, successRate, avgDuration, total };
+    return { currentStreak, successRate, avgDuration, total };
   } catch (err) {
-    return { logsList:[],currentStreak: 0, successRate: 0, avgDuration: 0, total: 0 };
+    return { currentStreak: 0, successRate: 0, avgDuration: 0, total: 0 };
   }
 }
 
-let logDirty = false;
 
 function addLog(line) {
-  if (!line || line.length <= 1) return;
+  if(line.length>1){
+  let textLine =`<p>[${new Date().toLocaleString()}] ${line}</p>`;
+  if(logFile!=''){
+    try {
+      logData = {
+          ...logData, 
+          timestamp: logData.timestamp?logData.timestamp: Date.now(),
+          terminalLogs: logData.terminalLogs+textLine,
+          GraphqlErrors: line.includes("Graphql Error")
+          ? (logData.GraphqlErrors || 0) + 1
+          : (logData.GraphqlErrors || 0),
+        };
 
-  const textLine = `<p>[${new Date().toLocaleString()}] ${line}</p>`;
-
-  // update memory only (fast)
-  logData = {
-    ...logData,
-    timestamp: logData.timestamp || Date.now(),
-    terminalLogs: (logData.terminalLogs || "") + textLine,
-    GraphqlErrors: line.includes("Graphql Error")
-      ? (logData.GraphqlErrors || 0) + 1
-      : (logData.GraphqlErrors || 0),
-  };
-
-  logDirty = true;
+      fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
+    } catch (e) {
+      console.log('Oops! '+e.message)
+    }
+  }
 
   terminalLogs.push(textLine);
   if (terminalLogs.length > 400) terminalLogs.shift();
-
   io.emit("terminal", {
-    textLine,
-    terminalCMD,
+    textLine: textLine,
+    terminalCMD: terminalCMD,
     GraphqlErrors: logData.GraphqlErrors
-  });
-
+ });
   const keyword = "Process finished";
+  
+  if (logFile != '' && !textLine.includes(keyword)) {
+    try{
     
-    if (logFile != '' && !textLine.includes(keyword)) {
-      try{
-      
-      const logFileData = fsSync.readFileSync(logFile, "utf-8");
-      const logFileJsonData = JSON.parse(logFileData);
-      const deployOptionsFileData = fsSync.readFileSync(deployOptionsFile, "utf-8");
-      const deployOptionsFilejsonData = JSON.parse(deployOptionsFileData);
-      if(prevCMD!=logFileJsonData.cmd){
-        prevCMD =logFileJsonData.cmd
-      io.emit("restartTimer", {cmd:logFileJsonData.cmd,deployOptions:deployOptionsFilejsonData,
-      GraphqlErrors: logFileData.GraphqlErrors});
-      }
-      }catch(e){
-  
-      }
+    const logFileData = fsSync.readFileSync(logFile, "utf-8");
+    const logFileJsonData = JSON.parse(logFileData);
+    const deployOptionsFileData = fsSync.readFileSync(deployOptionsFile, "utf-8");
+    const deployOptionsFilejsonData = JSON.parse(deployOptionsFileData);
+    if(prevCMD!=logFileJsonData.cmd){
+      prevCMD =logFileJsonData.cmd
+    io.emit("restartTimer", {cmd:logFileJsonData.cmd,deployOptions:deployOptionsFilejsonData,
+    GraphqlErrors: logFileData.GraphqlErrors});
     }
+    }catch(e){
 
-}
-setInterval(() => {
-  
-  if (logDirty && logFile) {
-    try {
-      fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
-      logDirty = false;
-    } catch (e) {
-      console.log("Disk write failed:", e.message);
     }
   }
-}, 1500);
+  }
+}
+
 function getTimeInMinSec(estimatedTotalDeploymentTime){
         try{
             const avgDurationMinutes = Math.floor(estimatedTotalDeploymentTime / 60);
@@ -282,12 +260,11 @@ io.on("connection", (socket) => {
   async function runMagentoCommands() {
     try {
       await connectSSH(defaultEnvVariable.magentoHost,defaultEnvVariable.magentousername,defaultEnvVariable.magentoprivateKey)
-      
 
       
       const magentoCommands = [
           defaultEnvVariable.magentoDirPath+'/bin/magento cache:flush',
-          'chmod -R 777 '+defaultEnvVariable.magentoDirPath+'/var/ '+defaultEnvVariable.magentoDirPath+'/generated/ '+defaultEnvVariable.magentoDirPath+'/pub/static',
+          'sudo chmod -R 777 '+defaultEnvVariable.magentoDirPath+'/var/ '+defaultEnvVariable.magentoDirPath+'/generated/ '+defaultEnvVariable.magentoDirPath+'/pub/static',
           defaultEnvVariable.magentoDirPath+'/bin/magento indexer:reindex'
         ];
 
@@ -295,7 +272,7 @@ io.on("connection", (socket) => {
 
         let magentoCMDText = magentoCmd;
 
-        if (!magentoCmd.includes("chmod -R 777")) {
+        if (!magentoCmd.includes("sudo chmod -R 777")) {
           magentoCMDText = magentoCmd.includes("indexer:reindex")
             ? "Reindex Indexer"
             : "Flush Cache";
@@ -322,7 +299,7 @@ io.on("connection", (socket) => {
           }
           return false; // ❌ STOP sequence
         }
-        if (!magentoCmd.includes("chmod -R 777")) {
+        if (!magentoCmd.includes("sudo chmod -R 777")) {
         addLog(`✅ Finished "${magentoCMDText}"`);
         }
         
@@ -349,9 +326,6 @@ io.on("connection", (socket) => {
       } 
     }
   }
-
-
-
 
 
   async function execudeCommand(cmd,createBackup,deploymentType,start){
@@ -383,7 +357,7 @@ io.on("connection", (socket) => {
       addLog(`⚠️ ${strdeploymentType}`);
       
       
-      if (cmd==="magento flush cache") {
+      if (cmd.startsWith("magento") && cmd==="magento flush cache") {
         const result =await runMagentoCommands();
           if (!result) {
             resolve(false);
@@ -394,242 +368,202 @@ io.on("connection", (socket) => {
           }
         
       }else{
-         try{
-                        await connectSSH(defaultEnvVariable.frontHost,defaultEnvVariable.frontUsername,defaultEnvVariable.frontPrivateKey)
-                        const ROOT_DIR = defaultEnvVariable.frontDirPath;
-        
-                        socket.emit('cmdStatus', cmd,'boxrunning');
-                        let sshCMD =''
-                        let wrappedCMD=''
-                        
-                          if (cmd.startsWith("rm -rf")) {
-                              wrappedCMD = cmd.replace(/^rm\s+-rf\s+/, `${withSudo} rm -rf ${ROOT_DIR}/`);
-                          } else {
-                              const needsNode = cmd.startsWith("npm");
-        
-                              sshCMD = `
-                              cd ${ROOT_DIR} || exit 1
-                              ${needsNode ? `
-                              export NVM_DIR="$HOME/.nvm"
-                              [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-                              ` : ""}
-                              ${withSudo+' '+cmd}
-                              `;
-                              if (cmd === "npm run build") {
-                              wrappedCMD = `
-                                bash -lc '
-                                (
-                                ${sshCMD}
-                                ) &
-                                PID=$!
-                                echo BUILD_PID:$PID
-                                wait $PID
-                                '
-                                `;
-                              }else{
-                                wrappedCMD = sshCMD
-                              }
-                      }
-        
-                        const result = await sshConnection.execCommand(wrappedCMD, {
-                          onStdout(chunk) {
-                            const text = chunk.toString();
-                            const match = text.match(/BUILD_PID:(\d+)/);
-                            if (match) {
-                              remoteBuildPID = match[1];
-                              return;
-                            }
-                            addLog(text.slice(0, 150));
-                          },
-                          onStderr(chunk) {
-                            const text = chunk.toString().slice(0, 150);
-                            addLog(text);
-                          }
-                        });
+        try{
+                await connectSSH(defaultEnvVariable.frontHost,defaultEnvVariable.frontUsername,defaultEnvVariable.frontPrivateKey)
+                const ROOT_DIR = defaultEnvVariable.frontDirPath;
 
-                        
-        
-                        
-                        if (result.code !== 0) {
-                        const end = Date.now();
-                        const durationTotal = ((end - start) / 1000).toFixed(2);
-                        const warnings = (result.stdout.match(/warning/gi) || []).length;
-                        const errors = (result.stderr.match(/error/gi) || []).length;
-        
-                        const totalavgDurationSeconds = Math.floor(durationTotal);
-                        addLog(`❌ Build failed, Process finished in ${getTimeInMinSec(totalavgDurationSeconds)}.`);
-                        logData = {
-                        ...logData, 
-                        duration_seconds: durationTotal,
-                        exit_code: result.code,
-                        status: result.code === 0 ? "✅ SUCCESS" : "❌ FAILED",
-                        warnings,
-                        errors,
-                        };
-                        fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
-                        socket.emit('cmdStatus', cmd,'boxerror');
-                        logFile = ``;
-                        terminalCMD='';
-                        terminalLogs=[]
-                        if (child) {
-                        child.kill("SIGTERM");
-                        child = null;
-                        }
-                        resolve(false);
-                        return;
-                        }else{
-                        socket.emit('cmdStatus', cmd,'boxcompleted');
-                        let cmdText = cmd.includes("npm run build")
-                        ? `${deploymentType.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())} Deployment`
-                        : cmd;
-                        addLog(`✅ Finished "${cmdText}"`);
-                        }
-        
-                        if (cmd === "npm run build") {
-                          let ServerDeployOptions={
-                                type:'complete_application',
-                                pageUrls:'',
-                          }
-        
-                          const ServerdeployOptionsJson = Buffer.from(JSON.stringify(ServerDeployOptions)).toString("base64");
-                          let serverdeployOptionsCMD = `
-                          echo ${ServerdeployOptionsJson} | base64 -d > ${ROOT_DIR}/deployOptions.json
-                          `;
-                          await sshConnection.execCommand(serverdeployOptionsCMD);
-                      
-        
-                        if (createBackup) {
-        
-                        if(logFile!=''){ 
-                        try {
-                        logData = {
-                        ...logData, 
-                        cmd: 'create_backup'
-                        };
-        
-                        fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
-        
-                        } catch (e) {
-                        console.log('Oops! '+e.message)
-                        }
-                        }
-        
-        
-                        socket.emit('cmdStatus', 'create_backup','boxrunning');
-                        terminalCMD=`⚠️ Generating backup...`;
-                        addLog("⚠️ Generating backup...");
-                        
-        
-                        const timestampBase = new Date().toISOString().replace(/[:.]/g, "-");
-                        const MAX_BACKUPS = defaultEnvVariable.maxBackups;
-        
-                        const backUpcmd = `
-                        cd ${ROOT_DIR} || exit 1
-                        ${withSudo} mkdir -p backups
+                socket.emit('cmdStatus', cmd,'boxrunning');
+                let sshCMD =''
+                
+                  if (cmd.startsWith("rm -rf")) {
+                      sshCMD = cmd.replace(/^rm\s+-rf\s+/, `rm -rf ${ROOT_DIR}/`);
+                  } else {
+                      const needsNode = cmd.startsWith("npm");
 
-                        if [ -d build ]; then
-                          sourceDir="build"
-                        elif [ -d out ]; then
-                          sourceDir="out"
-                        elif [ -d .next ]; then
-                          sourceDir=".next"
-                        else
-                          echo "No build or out directory found"
-                          exit 1
-                        fi
+                      sshCMD = `
+                      cd ${ROOT_DIR} || exit 1
+                      ${needsNode ? `
+                      export NVM_DIR="$HOME/.nvm"
+                      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                      ` : ""}
+                      ${cmd}
+                      `;
+                  }
 
-                        ZIP_NAME="\${sourceDir}-${timestampBase}.zip"
+                const result = await sshConnection.execCommand(sshCMD, {
+                  onStdout(chunk) {
+                    const text = chunk.toString().slice(0, 150);
+                    addLog(text);
+                  },
+                  onStderr(chunk) {
+                    const text = chunk.toString().slice(0, 150);
+                    addLog(text);
+                  }
+                });
 
-                        ${withSudo} zip -rq "\$ZIP_NAME" "\$sourceDir"
-                        ${withSudo} mv "\$ZIP_NAME" backups/
+                
+                if (result.code !== 0) {
+                const end = Date.now();
+                const durationTotal = ((end - start) / 1000).toFixed(2);
+                const warnings = (result.stdout.match(/warning/gi) || []).length;
+                const errors = (result.stderr.match(/error/gi) || []).length;
 
-                        # 🔥 Keep only latest ${MAX_BACKUPS} backups
-                        cd backups || exit 1
-                        ls -1t "\${sourceDir}-"*.zip | tail -n +$(( ${MAX_BACKUPS} + 1 )) | xargs -r ${withSudo} rm -f
-                        echo "\$ZIP_NAME"
-                        `;
+                const totalavgDurationSeconds = Math.floor(durationTotal);
+                addLog(`❌ Build failed, Process finished in ${getTimeInMinSec(totalavgDurationSeconds)}.`);
+                logData = {
+                ...logData, 
+                duration_seconds: durationTotal,
+                exit_code: result.code,
+                status: result.code === 0 ? "✅ SUCCESS" : "❌ FAILED",
+                warnings,
+                errors,
+                };
+                fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
+                socket.emit('cmdStatus', cmd,'boxerror');
+                logFile = ``;
+                terminalCMD='';
+                terminalLogs=[]
+                if (child) {
+                child.kill("SIGTERM");
+                child = null;
+                }
+                resolve(false);
+                return;
+                }else{
+                socket.emit('cmdStatus', cmd,'boxcompleted');
+                let cmdText = cmd.includes("npm run build")
+                ? `${deploymentType.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())} Deployment`
+                : cmd;
+                addLog(`✅ Finished "${cmdText}"`);
+                }
 
-        
-                        const backupResult = await sshConnection.execCommand(backUpcmd);
-        
-                          if(backupResult.code !== 0){
-                            addLog('❌ '+backupResult.stderr.trim())
-                            socket.emit('cmdStatus', 'create_backup','boxerror');
-                            logData = {
-                            ...logData, 
-                            exit_code: backupResult.code,
-                            status: "❌ FAILED",
-                            };
-                            fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
-                            // resolve(false);
-                            // return;
-                            addLog('❌ Backup Created Failed: '+backupResult.stderr.trim())
-                            socket.emit('cmdStatus', 'create_backup','boxcompleted');
+                if (cmd === "npm run build") {
+                if (createBackup) {
 
-                          }else{
-                            addLog('✅  Backup Created: '+backupResult.stdout.trim())
-                            socket.emit('cmdStatus', 'create_backup','boxcompleted');
-                          }
-        
-                        } 
-                        
-                        const end = Date.now();
-                        const durationTotal = ((end - start) / 1000).toFixed(2);
-                        const warnings = (result.stdout.match(/warning/gi) || []).length;
-                        const errors = (result.stderr.match(/error/gi) || []).length;
-        
-                        const totalavgDurationSeconds = Math.floor(durationTotal);
-                        terminalCMD=`⚠️ Saving build log...`;  
-                        addLog(`⚠️ Saving build log`);
-                        logData = {
-                        ...logData, 
-                        duration_seconds: durationTotal,
-                        exit_code: result.code,
-                        status: result.code === 0 ? "✅ SUCCESS" : "❌ FAILED",
-                        warnings,
-                        errors,
-                        };
-                        fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
-                        terminalCMD=`⚠️ Almost done...`; 
-                        let GraphqlErrorsText=''
-                        if(logData.GraphqlErrors && logData.GraphqlErrors>0){
-                        const plural = logData.GraphqlErrors === 1 ? "" : "s";
-                        GraphqlErrorsText = ` with ${logData.GraphqlErrors} graphql error${plural}`;
-                        }
-                        addLog(`✅ Process finished ${GraphqlErrorsText} in ${getTimeInMinSec(totalavgDurationSeconds)}, View Site at <a target="_blank" href="${defaultEnvVariable.baseURL || defaultEnvVariable.BASE_URL || null}">${defaultEnvVariable.baseURL || defaultEnvVariable.BASE_URL || null}</a>`);
-                        logFile = ``;
-                        terminalCMD='';
-                        terminalLogs=[]
-                        resolve(true);
-                        return;
-        
-        
-                        }else{
-                        resolve(true);
-                        return;
-                        }
-        
-              
-                }catch (error) {
-                addLog(`❌ Error: ${error.message}, Process finished`);
-                socket.emit("cmdStatus", cmd, "boxerror");
-                    logFile = ``;
-                    terminalCMD='';
-                    terminalLogs=[]
-                    if (child) {
-                      child.kill("SIGTERM");
-                      child = null;
-                    }
-                return false;
-              } finally {
+                if(logFile!=''){ 
+                try {
+                logData = {
+                ...logData, 
+                cmd: 'create_backup'
+                };
+
+                fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
+
+                } catch (e) {
+                console.log('Oops! '+e.message)
+                }
+                }
+
+
+                socket.emit('cmdStatus', 'create_backup','boxrunning');
+                terminalCMD=`⚠️ Generating backup...`;
+                addLog("⚠️ Generating backup...");
+                
+
+                const timestampBase = new Date().toISOString().replace(/[:.]/g, "-");
+                const MAX_BACKUPS = defaultEnvVariable.maxBackups;
+
+                const backUpcmd = `
+                cd ${ROOT_DIR} || exit 1
+                mkdir -p backups
+
+                if [ -d build ]; then
+                  sourceDir="build"
+                elif [ -d out ]; then
+                  sourceDir="out"
+                else
+                  echo "No build or out directory found"
+                  exit 1
+                fi
+
+                ZIP_NAME="\${sourceDir}-${timestampBase}.zip"
+                zip -rq "\$ZIP_NAME" "\$sourceDir"
+                mv "\$ZIP_NAME" backups/
+
+                # 🔥 Keep only latest ${MAX_BACKUPS} backups
+                cd backups || exit 1
+                ls -1t \${sourceDir}-*.zip | tail -n +$(( ${MAX_BACKUPS} + 1 )) | xargs -r rm -f
+
+                echo "\$ZIP_NAME"
+                `;
+
+                const backupResult = await sshConnection.execCommand(backUpcmd);
+
+                  if(backupResult.code !== 0){
+                    addLog('❌ '+backupResult.stderr.trim())
+                    socket.emit('cmdStatus', 'create_backup','boxerror');
+                    logData = {
+                    ...logData, 
+                    exit_code: backupResult.code,
+                    status: "❌ FAILED",
+                    };
+                    fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
+                    resolve(false);
+                    return;
+                  }else{
+                    addLog('✅  Backup Created: '+backupResult.stdout.trim())
+                    socket.emit('cmdStatus', 'create_backup','boxcompleted');
+                  }
+
+                } 
+                
+                const end = Date.now();
+                const durationTotal = ((end - start) / 1000).toFixed(2);
+                const warnings = (result.stdout.match(/warning/gi) || []).length;
+                const errors = (result.stderr.match(/error/gi) || []).length;
+
+                const totalavgDurationSeconds = Math.floor(durationTotal);
+                terminalCMD=`⚠️ Saving build log...`;  
+                addLog(`⚠️ Saving build log`);
+                logData = {
+                ...logData, 
+                duration_seconds: durationTotal,
+                exit_code: result.code,
+                status: result.code === 0 ? "✅ SUCCESS" : "❌ FAILED",
+                warnings,
+                errors,
+                };
+                fsSync.writeFileSync(logFile, JSON.stringify(logData, null, 2));
+                terminalCMD=`⚠️ Almost done...`; 
+                let GraphqlErrorsText=''
+                if(logData.GraphqlErrors && logData.GraphqlErrors>0){
+                const plural = logData.GraphqlErrors === 1 ? "" : "s";
+                GraphqlErrorsText = ` with ${logData.GraphqlErrors} graphql error${plural}`;
+                }
+                addLog(`✅ Process finished ${GraphqlErrorsText} in ${getTimeInMinSec(totalavgDurationSeconds)}, View Site at <a target="_blank" href="${defaultEnvVariable.baseURL || defaultEnvVariable.BASE_URL || null}">${defaultEnvVariable.baseURL || defaultEnvVariable.BASE_URL || null}</a>`);
+                logFile = ``;
+                terminalCMD='';
+                terminalLogs=[]
                 resolve(true);
                 return;
-              }
+
+
+                }else{
+                resolve(true);
+                return;
+                }
+
+      
+        }catch (error) {
+        addLog(`❌ Error: ${error.message}, Process finished`);
+        socket.emit("cmdStatus", cmd, "boxerror");
+            logFile = ``;
+            terminalCMD='';
+            terminalLogs=[]
+            if (child) {
+              child.kill("SIGTERM");
+              child = null;
+            }
+        return false;
+      } finally {
+        
+      }
       
       }
 
     } catch (err) {
       console.log(err)
+      console.log('raman i found error', err.messgae)
       socket.emit("BuildProcessStopped");
       logFile = ``;
       terminalCMD='';
@@ -641,45 +575,25 @@ io.on("connection", (socket) => {
    
   }
   
-  socket.on("stopSHH", async() => {
+  
+  socket.on("stopBuildProcess", async() => {
+          if (isConnected && sshConnection){
           await sshConnection.dispose();
           isConnected=false
-          socket.emit("stopedSHH");
-  })
-  socket.on("stopBuildProcess", async() => {
-
-            try {
-                if (remoteBuildPID) {
-                  await sshConnection.execCommand(`kill -9 ${remoteBuildPID}`);
-                  remoteBuildPID = null;
-                }
-            } catch (e) {
-              addLog(`Kill failed: ${e.message}`);
-            }
-    
-
-
-
-          if (isConnected && sshConnection){
-            await sshConnection.dispose();
-            isConnected=false
           }
           logFile = ``;
           terminalCMD='';
           terminalLogs=[]
-          
+          addLog(`✅ Build Process Stopped...`);
           if (child?.pid) {
             try {
               process.kill(-child.pid, "SIGTERM"); // kill group
               child = null;
             } catch (err) {
-              addLog("Failed to kill process:", err.message);
+              console.error("Failed to kill process:", err.message);
             }
           }
-
-          addLog(`✅ Build Process Stopped...`);
           socket.emit("BuildProcessStopped");
-          
     
   })
   socket.on("runCommand", async (AllCommands, createBackup,deploymentType,deploymentSteps,pageUrls,start,newEnvVariable,deployOptions) => {
@@ -711,10 +625,10 @@ io.on("connection", (socket) => {
         const ROOT_DIR = defaultEnvVariable.frontDirPath;
         try{
             let InitCmd = `
-              ${withSudo} mkdir -p ${ROOT_DIR}/cacheM/category \
+              mkdir -p ${ROOT_DIR}/cacheM/category \
                       ${ROOT_DIR}/cacheM/product \
                       ${ROOT_DIR}/cacheM/static &&
-              ${withSudo} touch ${ROOT_DIR}/deployOptions.json
+              touch ${ROOT_DIR}/deployOptions.json
               `;
               await sshConnection.execCommand(InitCmd);
 
@@ -766,6 +680,7 @@ io.on("connection", (socket) => {
   socket.on("getStatics", async(getBackup=false) => {
       
       let backups=[];
+      let logsList=[];
       let stats={};
       let defaultServer=''
       
@@ -819,8 +734,13 @@ io.on("connection", (socket) => {
             
             const SSHOk = await validateSSH(defaultEnvVariable.frontHost,defaultEnvVariable.frontUsername,defaultEnvVariable.frontPrivateKey,defaultEnvVariable.frontDirPath,defaultEnvVariable.ServerName)
             if(SSHOk){
+                // defaultServerId = defaultEnvVariable.ServerName.toLowerCase()
+                // .trim()
+                // .replace(/\s+/g, "-")      // spaces → hyphen
+                // .replace(/[^a-z0-9\-]/g, "");
                 defaultServerId = defaultServer
                 
+                console.log('defaultServerId',defaultServerId)
 
                 if(getBackup){
                   const ROOT_DIR = defaultEnvVariable.frontDirPath;
@@ -833,19 +753,51 @@ io.on("connection", (socket) => {
                     .trim()
                     .split("\n")
                     .filter(Boolean)
-                    
                 }
-               
-                stats = getBuildStats(defaultEnvVariable,defaultServerId);
+                if (fsSync.existsSync(logsRoot)) {
+
+                // Clean Old Logs
+                const allLogsfiles = fsSync.readdirSync(logsDir).filter(f => f.startsWith(defaultServerId) && f.endsWith(".json"));
+                const logFilesWithTime = allLogsfiles.map(f => {
+                  const stat = fsSync.statSync(path.join(logsDir, f));
+                  return { name: f, mtime: stat.mtimeMs };
+                }).sort((a, b) => a.mtime - b.mtime); // oldest first
+
+                const maxLogs = defaultEnvVariable.maxLogs || 5;
+                if (logFilesWithTime.length > maxLogs) {
+                  const toRemove = logFilesWithTime.slice(0, logFilesWithTime.length - maxLogs);
+                  toRemove.forEach(f => {
+                    try { fsSync.unlinkSync(path.join(logsDir, f.name)); } catch (e) {}
+                  });
+                }
+
+                const files = fsSync.readdirSync(logsDir).filter(f => f.startsWith(defaultServerId) && f.endsWith(".json"));
+                if(files){
+                  logsList = files
+                    .map(f => {
+                    try {
+                    return JSON.parse(fsSync.readFileSync(path.join(logsDir, f), "utf8"));
+                    } catch (e) {
+                    return null;
+                    }
+                    })
+                    .filter(Boolean)
+                    .filter(log => log.status!='Running')
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                }
+                }
+                
+                stats = getBuildStats(defaultServerId);
               
                 socket.emit("returnStatics", {
                   currentStreak: stats.currentStreak?stats.currentStreak:'0',
                   successRate: stats.successRate?stats.successRate:'0',
                   avgDuration: stats.avgDuration?stats.avgDuration:'0',
-                  logs:stats.logsList?stats.logsList:[],
                   envVariable:envVariable,
                   deployOptions:deployOptions,
                   backups:backups,
+                  logs:logsList,
                   defaultServer:defaultServer
                });
             }else{
@@ -857,7 +809,7 @@ io.on("connection", (socket) => {
                   envVariable:envVariable,
                   deployOptions:deployOptions,
                   backups:backups,
-                  logs:[],
+                  logs:logsList,
                   defaultServer:defaultServer
                 });
               }
@@ -870,7 +822,7 @@ io.on("connection", (socket) => {
           envVariable:envVariable,
           deployOptions:deployOptions,
           backups:backups,
-          logs:[],
+          logs:logsList,
           defaultServer:defaultServer
       });
       
@@ -885,7 +837,7 @@ io.on("connection", (socket) => {
           envVariable:envVariable,
           deployOptions:deployOptions,
           backups:backups,
-          logs:[],
+          logs:logsList,
           defaultServer:defaultServer
       });
     }
@@ -1022,8 +974,6 @@ io.on("connection", (socket) => {
             sourceDir="build"
           elif echo "$BACKUP_NAME" | grep -q "^out-"; then
             sourceDir="out"
-          elif echo "$BACKUP_NAME" | grep -q "^.next"; then
-            sourceDir=".next"
           else
             echo "Invalid backup name"
             exit 1
@@ -1032,20 +982,20 @@ io.on("connection", (socket) => {
           # safety backup
           OLD_BACKUP_NAME="\${sourceDir}_old_\$(date +%s)"
           if [ -d "$sourceDir" ]; then
-            "${withSudo}" mv "$sourceDir" "$OLD_BACKUP_NAME"
+            mv "$sourceDir" "$OLD_BACKUP_NAME"
           fi
 
           # restore
           if unzip -q "backups/$BACKUP_NAME"; then
             # cleanup old backup ONLY after success
             if [ -d "$OLD_BACKUP_NAME" ]; then
-              "${withSudo}" rm -rf "$OLD_BACKUP_NAME"
+              rm -rf "$OLD_BACKUP_NAME"
             fi
             echo "Backup Restored :- $BACKUP_NAME → $sourceDir"
           else
             echo "Restore failed, rolling back"
             if [ -d "$OLD_BACKUP_NAME" ]; then
-              "${withSudo}" mv "$OLD_BACKUP_NAME" "$sourceDir"
+              mv "$OLD_BACKUP_NAME" "$sourceDir"
             fi
             exit 1
           fi
@@ -1062,7 +1012,7 @@ io.on("connection", (socket) => {
           exit 1
         fi
 
-        "${withSudo}" rm -f "$BACKUP_NAME"
+        rm -f "$BACKUP_NAME"
         echo "Backup Removed:- $BACKUP_NAME"
         `;
     }
@@ -1175,4 +1125,5 @@ function restartPM2() {
 
 });
 
-server.listen(PORT, () => console.log(`${appName} running on port ${PORT}`));
+
+server.listen(PORT, () => console.log(`🚀 Command Runner: http://localhost:${PORT}`));

@@ -531,8 +531,6 @@ io.on("connection", (socket) => {
                           sourceDir="build"
                         elif [ -d out ]; then
                           sourceDir="out"
-                        elif [ -d .next ]; then
-                          sourceDir=".next"
                         else
                           echo "No build or out directory found"
                           exit 1
@@ -1022,8 +1020,6 @@ io.on("connection", (socket) => {
             sourceDir="build"
           elif echo "$BACKUP_NAME" | grep -q "^out-"; then
             sourceDir="out"
-          elif echo "$BACKUP_NAME" | grep -q "^.next"; then
-            sourceDir=".next"
           else
             echo "Invalid backup name"
             exit 1

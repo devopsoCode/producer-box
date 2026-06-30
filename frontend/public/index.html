@@ -4,44 +4,44 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  
   <!-- PWA Manifest -->
   <link rel="manifest" href="https://ih1q4tl873ex.space.minimax.io/manifest.json">
-
+  
   <!-- Theme Color -->
   <meta name="theme-color" content="#2563EB">
   <meta name="msapplication-TileColor" content="#2563EB">
-
+  
   <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="https://ih1q4tl873ex.space.minimax.io/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Deployment Center">
-
+  
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="https://ih1q4tl873ex.space.minimax.io/favicon.svg">
   <link rel="icon" type="image/png" href="https://ih1q4tl873ex.space.minimax.io/icon-192.png">
-
+  
   <!-- SEO Meta Tags -->
   <title>oCode-Deployment-Center - Modern Deployment Interface</title>
   <meta name="description" content="User-friendly deployment interface for non-technical users. Deploy with confidence using real-time monitoring and rollback capabilities.">
   <meta name="keywords" content="deployment, devops, ci/cd, deployment interface, non-technical">
   <meta name="author" content="MiniMax Agent">
-
+  
   <!-- Open Graph -->
   <meta property="og:title" content="Deployment Center">
   <meta property="og:description" content="Modern deployment interface for non-technical users">
   <meta property="og:image" content="/icon-512.png">
   <meta property="og:type" content="website">
-
+  
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Deployment Center">
   <meta name="twitter:description" content="Modern deployment interface for non-technical users">
   <meta name="twitter:image" content="/icon-512.png">
-
+  
   <link rel="stylesheet" crossorigin="" href="./style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js">
 </script>
@@ -52,7 +52,7 @@
 <body cz-shortcut-listen="true">
   <div id="root">
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-
+        
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
 <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -189,13 +189,13 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-
+    
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Deploy Application <span id="server_name"></span></h3>
 <div class="space-y-4 mb-6">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Deployment Steps</label>
         <div class="grid grid-cols-1 gap-3 deployment_steps">
-
+            
 
                 <button onClick="toggleStep('magento flush cache')" id="magento_flush_cache" class=" active step_option flex items-center justify-between space-x-3 p-4 rounded-lg border transition-all border-blue-500 bg-blue-50 dark:bg-blue-900/20">
                 <div class="flex items-start space-x-3">
@@ -223,7 +223,7 @@
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round">
-
+                    
                         <!-- Checkbox outline -->
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
@@ -262,7 +262,7 @@
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round">
-
+                    
                         <!-- Checkbox outline -->
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
@@ -298,7 +298,7 @@
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round">
-
+                    
                     <!-- Checkbox outline -->
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
@@ -347,7 +347,7 @@
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round">
-
+                    
                     <!-- Checkbox outline -->
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
@@ -418,7 +418,7 @@
                     </svg>
 
                     </div>
-
+                
                 <div class="text-left">
                 <h4 class="font-medium text-gray-900 dark:text-white">All Categories</h4>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Redeploy all category pages.</p>
@@ -445,7 +445,7 @@
                 </div>
 
                 </button>
-
+                
                 <button onClick="toggleType('all_products')" id="all_products" class=" type_option flex items-center justify-between space-x-3 p-4 rounded-lg border transition-all">
                 <div class="flex items-start space-x-3">
 
@@ -483,7 +483,7 @@
                     <circle class="dot" cx="12" cy="12" r="4" fill="rgb(37 99 235)"></circle>
 
                     </svg>
-
+                   
 
 
                 </div>
@@ -504,7 +504,7 @@
                 </svg>
 
                     </div>
-
+                
                 <div class="text-left">
                 <h4 class="font-medium text-gray-900 dark:text-white">Page URL(s) Only</h4>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Deploy selected URL(s) — category, product, home page, or any other specific page. ("," Seprated multiple URLs)</p>
@@ -546,7 +546,7 @@
 <div class="space-y-6">
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
 <div class="space-y-4">
-
+    
 <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400" id="EstimatedDeploymentTimeSection">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-4 h-4">
 <circle cx="12" cy="12" r="10">
@@ -588,7 +588,7 @@
 
 <div id="ProcessStatus" class="text-xs text-gray-500 dark:text-gray-400">
     <span id="ProcessStatusTime"></span>
-    <span id="ProcessStatusText"></span>
+    <span id="ProcessStatusText"></span> 
 </div>
 <div id="progressContainer" style="display:none" class="text-xs text-gray-500 dark:text-gray-400 text-center">
   <div id="progressBar"></div>
@@ -696,7 +696,7 @@
 </div>
 </div>
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-
+       
 <div class="p-6" >
     <div class="env_input_section">
         <nav id="serverList" class="flex space-x-8">
@@ -726,7 +726,7 @@
             <input class="env_input" type="text" id="gitBranch" placeholder="Enter Git Branch Name to enable git pull" readonly>
         </div>
 
-
+        
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between" >
             <div class="py-4">
             <p class="text-xl text-gray-900 dark:text-gray-400">Magento Setting</p>
@@ -734,7 +734,7 @@
             </div>
         </div>
 
-
+         
         <div class="env_input_row">
             <label class="env_input_label">Host:</label>
             <input class="env_input" type="text" id="magentoHost" placeholder="Enter Host Name to enable Flush Magento Cache" readonly>
@@ -766,7 +766,7 @@
             </div>
         </div>
 
-
+         
         <div class="env_input_row">
             <label class="env_input_label">Host<span>*</span>:</label>
             <input class="env_input" type="text" id="frontHost" placeholder="Enter Host Name" readonly>
@@ -784,7 +784,7 @@
             <input class="" type="file" accept=".pem" id="frontPrivateKeyFile" name="frontPrivateKeyFile" disabled>
             </div>
         </div>
-
+        
 
         <div class="env_input_row">
             <label class="env_input_label">Root Dir Path<span>*</span>:</label>
@@ -792,7 +792,7 @@
         </div>
 
 
-
+        
 
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between" >
            <div class="py-4">
@@ -804,7 +804,7 @@
             <label class="env_input_label">Preview URL:</label>
             <input class="env_input" type="text" id="baseURL" placeholder="Enter Website Url to enable preview link after build" readonly>
         </div>
-
+        
         <div class="env_input_row">
             <label class="env_input_label">Backups Limit:</label>
             <input class="env_input" type="number" id="maxBackups" min="5"  placeholder="Default limit is 15" readonly>
@@ -935,7 +935,7 @@
 
 
  <script>
-
+    
     let allServers=[];
     let selectedServer='';
     let connectedServer='';
@@ -945,7 +945,7 @@
     let goNextErrorBtn = ''
     let goPrevErrorBtn = ''
     let envVariable={
-        id:null,
+        id:null,                
         ServerName:null,
         gitBranch: null,
         baseURL:null,
@@ -975,7 +975,7 @@
     let createBackup
     let allPastLogs=[]
     let estimatedTotalDeploymentTime=0
-
+    
     document.getElementById("frontPrivateKeyFile").addEventListener("change", async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -989,14 +989,14 @@
     });
 
     let data = await res.json();
-
+    
     if(data.file){
         document.getElementById("frontPrivateKey").value = data.file.filename;
         socket.emit("changeFilePermittion",`chmod 600 ${data.file.path}`);
     }
   });
 
-
+  
     document.getElementById("magentoprivateKeyFile").addEventListener("change", async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -1010,7 +1010,7 @@
     });
 
     let data = await res.json();
-
+    
     if(data.file){
         document.getElementById("magentoprivateKey").value = data.file.filename;
         socket.emit("changeFilePermittion",`chmod 600 ${data.file.path}`);
@@ -1036,7 +1036,7 @@
         });
 
         runbuildBtn.disabled = true
-        runbuildBtn.classList.add('not_allowed')
+        runbuildBtn.classList.add('not_allowed') 
         runbuildBtn.innerHTML = `<svg width="80" height="20" viewBox="0 0 120 30" fill="currentColor">
             <circle cx="15" cy="15" r="15">
                 <animate attributeName="r" dur="0.6s" values="15;9;15" repeatCount="indefinite"/>
@@ -1056,12 +1056,12 @@
         }
     function buildStrat(){
         updateBtnStatus(false)
-
+        
         if(document.getElementById('GraphqlErrors')){
             document.getElementById("GraphqlErrors").innerHTML=''
         }
-
-
+        
+            
 
         document.getElementById('page_url').readOnly = false;
         const allShowOldLogsBtns = document.querySelectorAll('.show_old_logs');
@@ -1088,7 +1088,7 @@
         document.getElementById("ProcessStatusTime").textContent = ''
             document.getElementById("ProcessStatusTime").style.display='none';
         }
-
+        
         terminal.innerHTML =  "";
         document.querySelectorAll('.boxrunning, .boxcompleted, .boxerror')
         .forEach(el => {
@@ -1096,7 +1096,7 @@
         });
 
         runbuildBtn.disabled = true
-        runbuildBtn.classList.add('not_allowed')
+        runbuildBtn.classList.add('not_allowed') 
         runbuildBtn.innerHTML = `<svg width="80" height="20" viewBox="0 0 120 30" fill="currentColor">
             <circle cx="15" cy="15" r="15">
                 <animate attributeName="r" dur="0.6s" values="15;9;15" repeatCount="indefinite"/>
@@ -1119,16 +1119,16 @@
         if(document.getElementById('terminal_heading')){
             document.getElementById('terminal_heading').innerHTML='Live Logs'
         }
-        if(document.getElementById("progressBar")){
-                document.getElementById("progressBar").style.width = "0%";
+        if(document.getElementById("progressBar")){ 
+                document.getElementById("progressBar").style.width = "0%"; 
         }
-
+        
 
 
     }
     function updateBtnStatus(btnStatus){
-
-
+        
+ 
         const settingSectionBtns = document.querySelectorAll('.setting_btn');
         if(btnStatus){
             stopbuildBtn.disabled=btnStatus
@@ -1171,7 +1171,7 @@
         });
 
         runbuildBtn.disabled = false
-        runbuildBtn.classList.remove('not_allowed')
+        runbuildBtn.classList.remove('not_allowed') 
         runbuildBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24"
                 viewBox="0 0 24 24"
@@ -1187,8 +1187,8 @@
             </svg><span>Start Deployment</span>`;
 
             clearInterval(intervalId);
-            if(document.getElementById("progressBar")){
-                document.getElementById("progressBar").style.width = "100%";
+            if(document.getElementById("progressBar")){ 
+                document.getElementById("progressBar").style.width = "100%"; 
                 document.getElementById("progressBar").classList.remove("overtime");
                 if(document.getElementById("progress-text")){
                     document.getElementById("progress-text").style.display='none'
@@ -1227,11 +1227,11 @@
                 document.getElementById('modal_t').innerText=statusMessage
             }
     })
-
+    
 
     // Initialize floating ball functionality
     function initFloatingBall() {
-
+    
     const ball = document.getElementById('minimax-floating-ball');
     if (!ball) return;
 
@@ -1274,12 +1274,12 @@
             initFloatingBall()
     });
 
-
+    
     const modal = document.getElementById("customModal");
 
     function showLoading(){
-
-
+                    
+                            
             if(document.getElementById('start_section')){
                 document.getElementById('start_section').style.display='none'
             }
@@ -1288,9 +1288,9 @@
                 document.getElementById('end_section').style.display='none'
             }
 
-
+            
             modal.classList.add("active");
-
+            
             if(document.getElementById('modal_t')){
                 document.getElementById('modal_t').innerHTML=`<span class="modal_t_span"><svg width="80" height="20" viewBox="0 0 120 30" fill="currentColor">
                     <circle cx="15" cy="15" r="15">
@@ -1310,9 +1310,9 @@
             if(document.getElementById('modal_status')){
                     document.getElementById('modal_status').innerHTML=``
             }
-
+            
     }
-
+                
     function updateStatus(status) {
         const el = document.getElementById("socket_status");
         if (el) el.textContent = status
@@ -1320,7 +1320,7 @@
     function closeModal(){
             modal.classList.remove("active");
     }
-
+    
     function toggleMenu(sectionId) {
         if(sectionId==='history'){
             showLoading()
@@ -1381,8 +1381,8 @@
     }
 
     function setDefaultServer(DefaultServer=null){
-
-
+            
+               
             const serverNames = Object.keys(allServers || {});
             if(serverNames.length>0){
             selectedServer = serverNames[0]
@@ -1408,7 +1408,7 @@
                 ) {
                 envVariable = allServers[selectedServer];
                 }
-
+            
             document.querySelectorAll('.server_item ').forEach(el => {
                 el.classList.remove(
                     'border-blue-500',
@@ -1443,13 +1443,13 @@
             setDefaultServer(selectedServer)
             let allCMD =['magento flush cache','git pull','npm install','create backup']
             for (const [key, value] of Object.entries(deployOptions)) {
-
+            
             if(key==='selectedServer'){
                 if(value){
                     selectedServer =value
                     setDefaultServer(selectedServer)
                 }
-
+                
             }
             if(key==='type' && value){
                const buttonType = document.getElementById(value);
@@ -1464,10 +1464,10 @@
                         typesvg.classList.remove('active');;
                     }
 
-
+                    
                 });
 
-
+                
                 if (buttonType) {
                     ['active','border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20'].forEach(cls => {
                         buttonType.classList.add(cls);
@@ -1494,8 +1494,8 @@
                         }
                     }
 
-
-
+                
+                
             }
             if(key==='pageUrls' && value){
                 const pageUrlInput = document.getElementById('page_url');
@@ -1526,11 +1526,11 @@
                             }
 
                             svg.classList.remove('active');
-
+                            
                         }
-
+                            
                 })
-
+                
 
                 value.forEach(item=>{
 
@@ -1553,27 +1553,27 @@
                             }
 
                             svg.classList.add('active');
-
+                            
                         }
-
+                            
                 })
-
+                
             }
 
-
+            
 
          }
 
          // 3️⃣ Find button and branch label elements
             const gitPullBtn = document.getElementById('git_pull');
             const gitPullBranch = document.getElementById('git_pull_branch');
-
+            
 
             // 4️⃣ Decide behavior based on git branch existence
             if (envVariable.gitBranch && typeof envVariable.gitBranch === "string" && envVariable.gitBranch.trim() !== "") {
                 if (gitPullBtn) gitPullBtn.style.display = "flex"; // ✅ show() replacement
                 if (gitPullBranch) gitPullBranch.innerHTML = `Take pull from Git Branch <b>${envVariable.gitBranch}</b>`;
-
+                
             } else {
                 if (gitPullBtn) gitPullBtn.style.display = "none"; // ✅ hide() replacement
                 if (gitPullBranch) gitPullBranch.innerHTML = ""; // clear label
@@ -1585,9 +1585,9 @@
             if (magentoFlushCacheBtn){
                 // 4️⃣ Decide behavior based on git branch existence
                 if (envVariable.magentoHost && envVariable.magentousername && envVariable.magentoprivateKey && envVariable.magentoDirPath) {
-                        magentoFlushCacheBtn.style.display = "flex";
+                        magentoFlushCacheBtn.style.display = "flex"; 
                 } else {
-                        magentoFlushCacheBtn.style.display = "none";
+                        magentoFlushCacheBtn.style.display = "none"; 
                        commands = commands.filter(cmd => !cmd.startsWith("magento"));
                 }
             }
@@ -1595,15 +1595,15 @@
             const runbuildBtn = document.getElementById('runbuild');
             if (runbuildBtn){
                 if (envVariable.frontHost && envVariable.frontUsername && envVariable.frontPrivateKey && envVariable.frontDirPath) {
-                        runbuildBtn.style.display = "";
+                        runbuildBtn.style.display = ""; 
                      } else {
-                        runbuildBtn.style.display = "none";
+                        runbuildBtn.style.display = "none"; 
                         commands = commands.filter(cmd => !cmd.startsWith("npm run build"));
-
+                        
                 }
             }
 
-         getApproximateBuildTime()
+         getApproximateBuildTime() 
 
     }
 
@@ -1625,10 +1625,10 @@
                 typesvg.classList.remove('active');;
             }
 
-
+            
         });
 
-
+        
         if (buttonType) {
             ['active','border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20'].forEach(cls => {
                 buttonType.classList.add(cls);
@@ -1647,7 +1647,7 @@
             if(document.getElementById('page_section')){
                 document.getElementById('page_section').style.display='flex';
                 document.getElementById('page_section').classList.add('active')
-
+                
             }
         }else{
             if(document.getElementById('page_section')){
@@ -1660,7 +1660,7 @@
     }
 
     function toggleStep(stepId) {
-
+         
         const stepIdCMD = stepId.replace(/ /g, '_');
         const step = document.getElementById(stepIdCMD);
 
@@ -1673,13 +1673,13 @@
             step.classList.toggle(cls);
         });
 
-
+        
         if (stepIdCMD === "npm_install") {
             if (step.classList.contains("active")) {
                 if (!commands.includes("npm install")) {
                     commands.unshift("npm install adm-zip archiver");
                 }
-
+                
             } else {
                 commands = commands.filter(cmd => !cmd.startsWith("npm install"));
             }
@@ -1688,7 +1688,7 @@
                 if (!commands.includes("git pull origin "+envVariable.gitBranch)) {
                     commands.unshift("git pull origin "+envVariable.gitBranch);
                 }
-
+                
             } else {
                 commands = commands.filter(cmd => !cmd.startsWith("git pull"));
             }
@@ -1704,7 +1704,7 @@
                 if (!commands.includes(stepId)) {
                     commands.unshift(stepId);
                 }
-
+                
             } else {
                 // Remove command if not active
                 commands = commands.filter(cmd => !cmd.startsWith(stepId));
@@ -1717,9 +1717,9 @@
 
         svg.classList.toggle('active');
     }
-
-       getApproximateBuildTime()
-       hideProgressState()
+                        
+       getApproximateBuildTime()  
+       hideProgressState()               
     }
 
 
@@ -1745,7 +1745,7 @@
     }
     function getApproximateBuildTime(){
         estimatedTotalDeploymentTime=0
-
+        
         TempCommands = commands.filter(cmd => !cmd.startsWith("rm -rf cacheM/"));
         let newFinalCommands = [
         ...TempCommands,
@@ -1758,10 +1758,10 @@
         if(EstimatedDeploymentTimeSection){
             EstimatedDeploymentTimeSection.style.display='none'
         }
-
-
+        
+            
                 const groups = {};
-
+                
                 try{
                 const allPastLogsList = allPastLogs.filter(log => log.status.includes('SUCCESS'));
                 allPastLogsList.forEach(log => {
@@ -1791,7 +1791,7 @@
                         estimatedTotalDeploymentTime = Math.floor(filtered[0].avg_duration_seconds);
                         if(estimatedTotalDeploymentTime>0){
                             estimatedTotalDeploymentTime=estimatedTotalDeploymentTime+20
-
+                            
                             if(document.getElementById('EstimatedDeploymentTime')){
                                 document.getElementById('EstimatedDeploymentTime').innerText =
                                 `Estimated deployment time: ${getTimeInMinSec(estimatedTotalDeploymentTime)}`;
@@ -1800,16 +1800,16 @@
                                 EstimatedDeploymentTimeSection.style.display='flex'
                             }
                         }else{
-
+                            
                         }
                     }
 
                 }
                 }catch(e){
                     console.log(e.message)
-
+                   
                 }
-
+                
 
     }
     function getTimeInMinSec(timeInSec){
@@ -1818,7 +1818,7 @@
             const avgDurationSeconds = timeInSec % 60;
             return `${avgDurationMinutes}m ${avgDurationSeconds}s`
         }catch(e){
-           return ``
+           return `` 
         }
     }
     function reorderCommands(commands) {
@@ -1828,19 +1828,19 @@
 
         const buildCommands = commands.filter(cmd => cmd.trim().toLowerCase() === "npm run build");
         const backUpCommands = commands.filter(cmd => cmd.trim().toLowerCase() === "create backup");
-        const otherCommands = commands.filter(cmd =>
+        const otherCommands = commands.filter(cmd => 
             !cmd.trim().toLowerCase().startsWith("magento") &&
             !cmd.trim().toLowerCase().startsWith("git pull") &&
             !cmd.trim().toLowerCase().startsWith("create backup") &&
             cmd.trim().toLowerCase() !== "npm run build"
         );
-
-        const firstCommand = ["sudo /srv/producerbox/producerbox.sh"];
-        const lastCommand = ["sudo /srv/producerbox/premsfix.sh"];
-        const reordered = [...firstCommand, ...magentoCommands,...gitCommands, ...otherCommands, ...buildCommands, ...backUpCommands, ...lastCommand];
-
+        const pmStartCMD = ['pm2 restart'];
+        const firstCommand = ["sudo /srv/producerbox/producerbox.sh"]; 
+        const reordered = [...firstCommand,...magentoCommands,...gitCommands, ...otherCommands, ...buildCommands, ...pmStartCMD, ...backUpCommands];
+        // const reordered = [...magentoCommands,...gitCommands, ...otherCommands, ...buildCommands, ...backUpCommands];
+        
         return reordered
-
+  
     }
 
     function updateClock() {
@@ -1852,9 +1852,9 @@
                     document.getElementById("ProcessStatusTime").innerHTML = `<span id="loader-emoji">⏳</span> ${getTimeInMinSec(totalSeconds)} `;
                     document.getElementById("ProcessStatusTime").style.display='block';
                 }
-
-
-
+                
+                
+                
                 const bar = document.getElementById("progressBar");
                 if (bar && estimatedTotalDeploymentTime > 0) {
                     if(document.getElementById('progressContainer')){
@@ -1879,15 +1879,15 @@
                         document.getElementById("progress-text").style.display='none'
                     }
                 }
-
+                
 
     }
-
+                 
     function startRollBack() {
-
+                    
     if(document.getElementById('backupToRestore') && document.getElementById('backupAction')){
             let action
-
+        
             if(document.getElementById('modal_t')){
                 document.getElementById('modal_t').innerHTML=`<svg width="80" height="20" viewBox="0 0 120 30" fill="currentColor">
                     <circle cx="15" cy="15" r="15">
@@ -1920,10 +1920,10 @@
         }
     }
 
-
-
+    
+                 
     function removeback(backName){
-
+                    
             if(document.getElementById('backupAction')){
                 document.getElementById('backupAction').value='remove'
             }
@@ -1942,7 +1942,7 @@
                 document.getElementById('backupToRestoreName').value=backName
             }
             modal.classList.add("active");
-
+            
             if(document.getElementById('modal_t')){
                 document.getElementById('modal_t').innerText="Are you sure you want to remove?"
             }
@@ -1953,7 +1953,7 @@
                 document.getElementById('backupActionBtn').innerText='Yes, Remove'
             }
     }
-
+                
     function rollback(backName) {
                 modal.classList.add("active");
                 if(document.getElementById('backupAction')){
@@ -1976,8 +1976,8 @@
                 if(document.getElementById('backupToRestoreName')){
                     document.getElementById('backupToRestoreName').value=backName
                 }
-
-
+                
+                
                 if(document.getElementById('modal_t')){
                     document.getElementById('modal_t').innerText="Are you sure you want to restore?"
                 }
@@ -1985,7 +1985,7 @@
                     document.getElementById('backupActionBtn').innerText='Yes, Restore'
                 }
     }
-
+                
     function showOldLogs(timestamp){
         const logItem = allPastLogs.find(log => log.timestamp == timestamp);
         resetStepsAndType(logItem)
@@ -1997,8 +1997,8 @@
         }
         if(document.getElementById("GraphqlErrors") && logItem.GraphqlErrors && logItem.GraphqlErrors>0){
             const plural = logItem.GraphqlErrors === 1 ? "" : "s";
-            document.getElementById("GraphqlErrors").innerHTML =`<p>Deployed with ${logItem.GraphqlErrors} graphql error${plural}.
-            <button class="font-medium text-blue-900 " onclick="highlightAllError()" id="ShowError" > Show Error${plural}</button></p><p class="flex items-center justify-center space-x-2 py-3">
+            document.getElementById("GraphqlErrors").innerHTML =`<p>Deployed with ${logItem.GraphqlErrors} graphql error${plural}. 
+            <button class="font-medium text-blue-900 " onclick="highlightAllError()" id="ShowError" > Show Error${plural}</button></p><p class="flex items-center justify-center space-x-2 py-3"> 
             <button class="prev-next-error flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500" onclick="goPrev()" id="goPrevError" >Prev Error</button>
             <button class="prev-next-error flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500" onclick="goNext()" id="goNextError">Next Error</button></p>`
             ShowErrorBtn = document.getElementById('ShowError')
@@ -2006,8 +2006,8 @@
             goPrevErrorBtn = document.getElementById('goPrevError')
             goNextErrorBtn.style.display='none'
             goPrevErrorBtn.style.display='none'
-        }
-
+        } 
+        
 
     }
     function resetStepsAndType(logItem){
@@ -2016,7 +2016,7 @@
         deploymentType=logItem.deployment_type
         commands=logItem.deployment_steps
         let buildStatus = logItem.status.includes('FAILED')?'boxerror':'boxcompleted'
-
+        
         const allSteps = document.querySelectorAll('.step_option');
         allSteps.forEach(type => {
             type.classList.remove('active', 'border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
@@ -2069,9 +2069,9 @@
                 }
             })
         }
-
+                
     }
-
+    
     function highlightAllError(){
             ShowErrorBtn.style.display='none'
             const searchText = "Graphql Error".toLowerCase();
@@ -2109,7 +2109,7 @@
         // Remove previous active state
         matches.forEach(p =>
             p.classList.remove("current_highlight")
-
+            
         );
 
 
@@ -2151,27 +2151,28 @@
         }
 
 
-
+    
     stopbuildBtn.onclick = () => {
         showLoading()
-        socket.emit("stopBuildProcess",0);
+        socket.emit("stopBuildProcess",0); 
     }
-
+    
     socket.on("BuildProcessStopped", () => {
          setTimeout(() => {
                 updateBtnStatus(true)
                 closeModal()
         }, 5000);
 
-
+        
     })
     runbuildBtn.onclick = () => {
         let pageUrlsList=null
         updateBtnStatus(false)
         let removeCommands = [];
-
+        
 
         commands = commands.filter(cmd => !cmd.startsWith("rm -rf cacheM/"));
+        // commands.unshift('sudo /srv/producerbox/producerbox.sh');
         if(deploymentType=='complete_application'){
             removeCommands = [
                 "rm -rf cacheM/category/*",
@@ -2182,10 +2183,10 @@
                 "rm -rf cacheM/category/*"
             ];
         }else if(deploymentType=='by_page_urls'){
-
+            
             if(document.getElementById("page_url")){
                 pageUrls =document.getElementById("page_url").value
-
+                
                 if(pageUrls.length<1){
                     if (!modal.classList.contains("active")) {
                         modal.classList.add("active");
@@ -2225,15 +2226,15 @@
                 }
         });
         commands = reorderCommands(commands);
-
-
-
+        
+        
+        
         if (commands && commands.length>0) {
             commands = commands.filter(cmd => !cmd.startsWith("create backup"));
             if(createBackup){
                 commands.push('create backup')
             }
-
+            
             //buildStrat()
             commands = reorderCommands(commands);
             let deploymentSteps = commands
@@ -2252,38 +2253,37 @@
                     startTime:startTime,
                     buildRunning:true
                 }
-
+                
                 socket.emit("resetDeploymentOptions", deployOptions);
                 let ServerDeployOptions={
                     type:deploymentType,
                     pageUrls:pageUrlsList,
                 }
 
-                updateClock();
+                updateClock(); 
                 intervalId = setInterval(() => {
                     updateClock(); // ← call the function
                 }, 1000);
 
             commands = [...new Set(commands)];
-            console.log(commands);
             socket.emit("runCommand", commands,createBackup,deploymentType,deploymentSteps,pageUrlsList,startTime,envVariable,ServerDeployOptions);
-        }
+        } 
     };
 
     socket.on("cmdStatus", (cmdID,cmdStatus) => {
         updateBoxStatus(cmdID,cmdStatus)
     })
-
+    
 
 
     socket.on("restartTimer", (data) => {
-
+        
         if(data.deployOptions && data.cmd && data.cmd!=''){
                 deployOptions=data.deployOptions
                 const index = deployOptions.commands.indexOf(data.cmd);
                 let previousCommands = deployOptions.commands.slice(0, index);
                 previousCommands = reorderCommands(previousCommands);
-
+                
                 previousCommands.forEach(pCmd=>{
                     updateBoxStatus(pCmd,'boxcompleted')
                 })
@@ -2294,7 +2294,7 @@
         if(data.timestamp){
                 buildStratContinue()
                 startTime = new Date(data.timestamp);
-                updateClock();
+                updateClock(); 
                 intervalId = setInterval(() => {
                     updateClock(); // ← call the function
                 }, 1000);
@@ -2320,7 +2320,7 @@
 
     // 2️⃣ Live logs
     socket.on("terminal", (data) => {
-
+       
     if(document.getElementById("GraphqlErrors") && data.GraphqlErrors && data.GraphqlErrors>0){
         const plural = data.GraphqlErrors === 1 ? "" : "s";
         let GraphqlErrorsMessage=`Found ${data.GraphqlErrors} graphql error${plural}`
@@ -2329,8 +2329,8 @@
                 socket.emit("stopBuildProcess",data.GraphqlErrors);
         }
 
-        document.getElementById("GraphqlErrors").innerHTML =`<p>${GraphqlErrorsMessage}.
-            <button class="font-medium text-blue-900 " onclick="highlightAllError()" id="ShowError" > Show Error${plural}</button></p><p class="flex items-center justify-center space-x-2 py-3">
+        document.getElementById("GraphqlErrors").innerHTML =`<p>${GraphqlErrorsMessage}. 
+            <button class="font-medium text-blue-900 " onclick="highlightAllError()" id="ShowError" > Show Error${plural}</button></p><p class="flex items-center justify-center space-x-2 py-3"> 
             <button class="prev-next-error flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500" onclick="goPrev()" id="goPrevError" >Prev Error</button>
             <button class="prev-next-error flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500" onclick="goNext()" id="goNextError">Next Error</button></p>`
             ShowErrorBtn = document.getElementById('ShowError')
@@ -2338,19 +2338,19 @@
             goPrevErrorBtn = document.getElementById('goPrevError')
             goNextErrorBtn.style.display='none'
             goPrevErrorBtn.style.display='none'
-
+            
     }
-
+      
     let line =data.textLine
-
+    
     if( document.getElementById("ProcessStatusText") && data.terminalCMD){
         document.getElementById("ProcessStatusText").innerHTML =`${data.terminalCMD}`
-    }
-
+    }    
+    
     terminal.innerHTML+=line
     terminal.scrollTop = terminal.scrollHeight;
-
-
+    
+    
 
     const keyword = "Process finished";
     if (line.includes(keyword)) {
@@ -2363,30 +2363,30 @@
                     terminal.classList.remove('with_tenor_img')
                 }, 5000);
             }
-
+            
             if( document.getElementById("ProcessStatusText")){
                 let lineText = line
                 .replace(/\[[^\]]+\]\s*/g, "")      // remove timestamps
                 .replace(/<\/?p>/g, "")             // remove all <p> and </p> tags
                 .trim();
                 document.getElementById("ProcessStatusText").innerHTML =`${lineText}`
-
+                
             }
             deployOptions={
             ...deployOptions,
             buildRunning:false
             }
             socket.emit("resetDeploymentOptions", deployOptions);
-
+            
         }else{
            buildStratContinue()
         }
-
+ 
 });
 
 
     socket.on("connect", () => {
-
+        
         showLoading()
         if (document.getElementById("ProcessStatusText")) {
             document.getElementById("ProcessStatusText").innerHTML = ''
@@ -2395,7 +2395,7 @@
             document.getElementById("ProcessStatusTime").innerHTML = '';
             document.getElementById("ProcessStatusTime").style.display='none';
         }
-
+        
         clearInterval(intervalId);
         runbuildBtn.disabled = false
         runbuildBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg"
@@ -2412,7 +2412,7 @@
         <path d="M9 17l3 3 3-3"/>
         </svg><span>Start Deployment</span>`;
         socket.emit("getStatics",false);
-
+        
     })
     socket.on("disconnect", () => {
          showLoading()
@@ -2446,12 +2446,12 @@
 
 
     socket.on("rollbackComplete", (rollbackCompleteStatus,updtaedBackups=null) => {
-
-
+        
+             
         if (!modal.classList.contains("active")) {
             modal.classList.add("active");
         }
-
+        
         if(document.getElementById('start_section')){
             document.getElementById('start_section').style.display='none'
         }
@@ -2473,24 +2473,24 @@
             }
         }
 
-        if(updtaedBackups){
-            ShowBackupList(updtaedBackups)
+        if(updtaedBackups){ 
+            ShowBackupList(updtaedBackups) 
         }
-
-
-
+        
+        
+            
     });
 
     socket.on("shhStatus", (status) => {
             updateStatus(status)
     })
     socket.on("returnStatics", (allStats) => {
-
+        
         closeModal()
         if(allStats.defaultServer && allStats.defaultServer !='default'){
             selectedServer =allStats.defaultServer
             connectedServer=selectedServer
-
+            
             if(selectedServer && allStats.envVariable.servers[selectedServer]){
                 if(document.getElementById('server_name')){
                     document.getElementById('server_name').innerText='For '+allStats.envVariable.servers[selectedServer].ServerName
@@ -2498,7 +2498,7 @@
             }else{
                 toggleMenu('settings')
             }
-
+            
         }else{
             toggleMenu('settings')
         }
@@ -2512,7 +2512,7 @@
                 );
                 allServers = allStats.envVariable.servers
 
-
+                
                 document.getElementById("serverList").innerHTML =
                 serverList.map(s => `<button onclick="toggleServer('${s.id}')" id="${s.id}" class="server_item flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors">
                 <span>${s.name}</span></button>`).join("")+
@@ -2524,8 +2524,8 @@
                             <span>+ Add New</span>
                         </button>
                         `;
-
-
+                
+                
 
                 if(serverList.length>1){
                     document.querySelectorAll('.delete_server_btn ').forEach(el => {
@@ -2551,7 +2551,7 @@
         ShowBackupList(allStats.backups)
         ShowlogsList(allStats.logs)
         if(allStats.avgDuration && allStats.successRate && allStats.currentStreak){
-
+        
             const totalavgDurationSeconds = Math.floor(allStats.avgDuration);
             if(document.getElementById('SuccessRateForMaxLogs')){
                 document.getElementById('SuccessRateForMaxLogs').innerText=`Last ${envVariable.maxLogs} deployments`
@@ -2575,20 +2575,20 @@
         }
         reSetSetting()
     })
-
+    
 
     function updateBoxStatus(cmdID,cmdStatus){
-
+        
         updateBtnStatus(false)
         document.getElementById('page_url').readOnly = true;
         let boxId = cmdID.replace(/ /g, '_');
-
+        
         if(boxId==='npm_run_build'){
             boxId =deployOptions.type
         }else if(boxId.startsWith('git_pull')){
             boxId = 'git_pull'
         }
-
+        
         if( document.getElementById(boxId)){
             document.getElementById(boxId).classList.remove(
                     'boxrunning',
@@ -2606,12 +2606,12 @@
             if(boxId ==='by_page_urls'){
                 document.getElementById('page_section').classList.add(cmdStatus)
             }
-
+            
         }
 
      }
-
-
+     
+    
      socket.on("stopedSHH", () => {
          deployOptions={
             selectedServer:selectedServer,
@@ -2628,20 +2628,20 @@
             socket.emit('getStatics',false);
         }, 1000);
 
-
+        
     })
 
     function connectServer(){
         showLoading()
         socket.emit('stopSHH');
-
+        
     }
     function toggleServer(serverName){
         selectedServer =serverName
         setDefaultServer(serverName)
     }
     function editSettings(){
-
+        
             if(document.getElementById('edit_settings')){
                 document.getElementById('edit_settings').style.display='none'
             }
@@ -2654,14 +2654,14 @@
             document.querySelectorAll('input[type="file"]').forEach(el => {
                 el.disabled = false;
             });
-
+            
     }
     function validateSettings(){
         showLoading()
         for (const [key, value] of Object.entries(envVariable)) {
         const inputEl = document.getElementById(key);
         if (inputEl) {
-            envVariable[key] = inputEl.value;
+            envVariable[key] = inputEl.value; 
         }
         }
         envVariable['id']=selectedServer
@@ -2693,7 +2693,7 @@
                 document.getElementById('modal_t').innerText=errorMessage
             }
         }
-
+            
     })
     function saveSettings(){
 
@@ -2712,7 +2712,7 @@
         for (const [key, value] of Object.entries(envVariable)) {
         const inputEl = document.getElementById(key);
         if (inputEl) {
-            envVariable[key] = inputEl.value;
+            envVariable[key] = inputEl.value; 
         }
         }
         envVariable['id']=selectedServer
@@ -2743,7 +2743,7 @@
         }
     }
 
-
+    
 
     function deleteServer(){
             showLoading()
@@ -2779,12 +2779,12 @@
             const inputEl = document.getElementById(key);
             if (inputEl) {
                 if(key ==='ServerName'){
-                        envVariable[key] = 'New Server';
+                        envVariable[key] = 'New Server'; 
                         toggleServer('New Server')
                 }else{
-                        envVariable[key] = '';
+                        envVariable[key] = ''; 
                 }
-
+                
             }
         }
         envVariable['id']=''
@@ -2793,22 +2793,22 @@
             socket.emit('getStatics',false);
         }, 1000);
 
-
+        
     }
-
+                    
 
     function ShowlogsList(alllogs){
         const logshistoryList = document.getElementById("logsListSection");
         logshistoryList.innerHTML = "";
-
+         
          if(alllogs && alllogs.length>0){
             allPastLogs =alllogs
             if(document.getElementById("no_log_history")){
                 document.getElementById("no_log_history").style.display='none'
             }
+        
 
-
-
+                                
 
                 const today = new Date();
                 const todayStr = today.toDateString();
@@ -2816,7 +2816,7 @@
                     const createdDate = new Date(b.timestamp);
                     return createdDate.toDateString() === todayStr && b.exit_code == 0;
                 });
-
+                
                 const DeploymentsToday = document.getElementById("Deployments_Today");
                 if(DeploymentsToday){
                     let todaySuccessDeployments = todaysBackups.filter(log => log.status.includes('SUCCESS'));
@@ -2826,7 +2826,7 @@
 
                 let alllogsFiles = alllogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 const logsFiles = alllogsFiles.slice(0, 15);
-
+                
                 logshistoryList.innerHTML = ""; // clear old list
                 const headli = document.createElement("li");
 
@@ -2839,7 +2839,7 @@
                         </p>`;
                 logshistoryList.appendChild(headli);
 
-
+                
                 logsFiles.forEach(log => {
                     const li = document.createElement("li");
                     const pageUrlsHTML = log.page_urls
@@ -2882,7 +2882,7 @@
                         </p>
                         ${pageUrlsHTML}
                         ${stderrHTML}
-
+                        
                     `;
                     logshistoryList.appendChild(li);
                 });
@@ -2890,11 +2890,11 @@
                     if(document.getElementById("no_log_history")){
                         document.getElementById("no_log_history").style.display='block'
                     }
-
+    
         }
 
     }
-
+                    
     function getDateTimeFromName(fileName){
         const date = new Date(
         fileName
@@ -2912,21 +2912,21 @@
 
     }
     function ShowBackupList(backups){
-
+        
         const historyList = document.getElementById("historyListSection");
         historyList.innerHTML = ""; // clear old list
-
-
-
+        
+        
+       
         if(backups && backups.length>0){
                 if(document.getElementById("no_history")){
                     document.getElementById("no_history").style.display='none'
                 }
-
+            
                 historyList.innerHTML = ""; // clear old list
                 let backupsFiles = backups.sort((a, b) => new Date(b.created) - new Date(a.created));
 
-
+                
                 backups.forEach(backup => {
                     const li = document.createElement("li");
                     li.innerHTML = `<p class="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -2981,10 +2981,11 @@
         }
 
     }
-
+                    
 </script>
 
 
 
 </body>
 </html>
+
