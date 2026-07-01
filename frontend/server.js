@@ -496,7 +496,7 @@ io.on("connection", (socket) => {
                           echo ${ServerdeployOptionsJson} | base64 -d > ${ROOT_DIR}/deployOptions.json
                           `;
                           await sshConnection.execCommand(serverdeployOptionsCMD);
-                      
+                          await sshConnection.execCommand("pm2 update");
         
                         if (createBackup) {
         

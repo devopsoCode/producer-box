@@ -1834,9 +1834,9 @@
             !cmd.trim().toLowerCase().startsWith("create backup") &&
             cmd.trim().toLowerCase() !== "npm run build"
         );
-        const pmStartCMD = ['pm2 restart'];
+        // const pmStartCMD = ['pm2 restart'];
         const firstCommand = ["sudo /srv/producerbox/producerbox.sh"]; 
-        const reordered = [...firstCommand,...magentoCommands,...gitCommands, ...otherCommands, ...buildCommands, ...pmStartCMD, ...backUpCommands];
+        const reordered = [...firstCommand,...magentoCommands,...gitCommands, ...otherCommands, ...buildCommands, ...backUpCommands];
         // const reordered = [...magentoCommands,...gitCommands, ...otherCommands, ...buildCommands, ...backUpCommands];
         
         return reordered
