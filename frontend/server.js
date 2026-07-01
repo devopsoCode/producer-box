@@ -496,7 +496,7 @@ io.on("connection", (socket) => {
                           echo ${ServerdeployOptionsJson} | base64 -d > ${ROOT_DIR}/deployOptions.json
                           `;
                           await sshConnection.execCommand(serverdeployOptionsCMD);
-                          await sshConnection.execCommand("pm2 update");
+                          
         
                         if (createBackup) {
         
@@ -570,8 +570,12 @@ io.on("connection", (socket) => {
                             addLog('✅  Backup Created: '+backupResult.stdout.trim())
                             socket.emit('cmdStatus', 'create_backup','boxcompleted');
                           }
-        
-                        } 
+                          
+                          await sshConnection.execCommand("pm2 update");
+                              
+                        }else{
+                          await sshConnection.execCommand("pm2 update");
+                        }
                         
                         const end = Date.now();
                         const durationTotal = ((end - start) / 1000).toFixed(2);
