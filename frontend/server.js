@@ -537,15 +537,15 @@ io.on("connection", (socket) => {
                           echo "No build or out directory found"
                           exit 1
                         fi
-
-                        ZIP_NAME="\${sourceDir}-${timestampBase}.zip"
+                        sourceDirName="\${sourceDir#.}"
+                        ZIP_NAME="\${sourceDirName}-${timestampBase}.zip"
 
                         ${withSudo} zip -rq "\$ZIP_NAME" "\$sourceDir"
                         ${withSudo} mv "\$ZIP_NAME" backups/
 
                         # 🔥 Keep only latest ${MAX_BACKUPS} backups
                         cd backups || exit 1
-                        ls -1t "\${sourceDir}-"*.zip | tail -n +$(( ${MAX_BACKUPS} + 1 )) | xargs -r ${withSudo} rm -f
+                        ls -1t "\${sourceDirName}-"*.zip | tail -n +$(( ${MAX_BACKUPS} + 1 )) | xargs -r ${withSudo} rm -f
                         echo "\$ZIP_NAME"
                         `;
 
@@ -830,7 +830,7 @@ io.on("connection", (socket) => {
                   const ROOT_DIR = defaultEnvVariable.frontDirPath;
                   const listCmd = `
                     cd ${ROOT_DIR}/backups || exit 1
-                    ls -1t *.zip
+                    ls -lt *.zip
                     `;
                     const listResult = await sshConnection.execCommand(listCmd);
                     backups = listResult.stdout
@@ -1081,7 +1081,7 @@ io.on("connection", (socket) => {
 
           const listCmd = `
           cd ${ROOT_DIR}/backups || exit 1
-          ls -1t *.zip
+          ls -lt *.zip
           `;
 
           const listResult = await sshConnection.execCommand(listCmd);
